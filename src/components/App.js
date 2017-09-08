@@ -49,7 +49,7 @@ class App extends Component {
           <br/>
           <br/>
         </div>
-        <GoogleNewsContainer queryString={this.state.queryString} />
+        <GoogleNewsContainer queryString={this.state.queryString} size={20} />
       </div>
     );
   }

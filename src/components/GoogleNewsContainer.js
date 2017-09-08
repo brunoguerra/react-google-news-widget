@@ -1,9 +1,20 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export const corsService = 'http://cors-anywhere.herokuapp.com';
+export const googleNewsBaseUri = 'https://news.google.com/news/section?cf=all&'
+export const defaultLang = 'pt-BR';
+export const defaultLocation = 'pt-BR_br';
+export const defaultSize = 10;
+export const imagePlaceholder = 'http://via.placeholder.com/80x80';
+export const api = (
+  q,
+  lang = defaultLang,
+  location = defaultLocation,
+  size = defaultSize
+) =>
+  `${corsService}/${googleNewsBaseUri}hl=${lang}&ned=${location}&q=${q}&num=${size}&output=rss`;
 
-export const api = q =>
-  `${corsService}/https://news.google.com/news/section?cf=all&hl=pt-BR&ned=pt-BR_br&q=${q}&num=10&output=rss`;
 
 export const Card = ({
   author,
@@ -13,20 +24,16 @@ export const Card = ({
   urlToImage,
   publishedAt,
 }) => (
-  <div className="col s6 m4">
-    <div className="card">
-      <div className="card-image">
-        <img src={urlToImage} alt={title} />
-        <span className="card-title">{title}</span>
-      </div>
-      <div className="card-content">
-        <p>{description}</p>
-        <div className="author">Published by: {author}</div>
-        <div className="publishedAt">Published at: {publishedAt}</div>
-      </div>
-      <div className="card-action">
-        <a href={url} target="_blank">Access the news link</a>
-      </div>
+  <div className="card">
+    <div className="card-content">
+      <img src={urlToImage} alt={title} className="card-image" />
+      <span className="card-title">{title}</span>
+      <p>{description}</p>
+      <div className="author">Published by: {author}</div>
+      <div className="publishedAt">Published at: {publishedAt}</div>
+    </div>
+    <div className="card-action">
+      <a href={url} target="_blank">Access the news link</a>
     </div>
   </div>
 )
@@ -39,14 +46,19 @@ class GoogleNewsSearchContainer extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { queryString } = nextProps
-    if (queryString !== this.state.queryString) {
+    if (queryString && (queryString !== this.state.queryString)) {
       this.setState({ queryString: nextProps.queryString });
       this.fetchData(queryString);
     }
   }
 
   fetchData = (queryString) => {
-    fetch(api(queryString))
+    fetch(api(
+      queryString,
+      this.props.lang,
+      this.props.location,
+      this.props.size,
+    ))
       .then(response => response.text())
       .then(body => parseData(body))
       .then(feeds => {
@@ -57,15 +69,30 @@ class GoogleNewsSearchContainer extends Component {
 
   render = () => (
     <div className="google-news-container row">
-      {this.state.news.map((news, i) =>
-        <Card
-          key={'google-news-card-'+i}
-          {...news}
-        />
-      )}
+      <div className="col s12 cards-container">
+        {this.state.news.map((news, i) =>
+          <Card
+            key={'google-news-card-'+i}
+            {...news}
+          />
+        )}
+      </div>
     </div>
   );
 }
+
+GoogleNewsSearchContainer.defaultProps = {
+  lang: defaultLang,
+  location: defaultLocation,
+  size: defaultSize,
+};
+
+GoogleNewsSearchContainer.propTypes = {
+  lang: PropTypes.string,
+  location: PropTypes.string,
+  size: PropTypes.number,
+  queryString: PropTypes.string,
+};
 
 // Helpers and parsers
 function parseData(data) {
@@ -77,9 +104,11 @@ function parseData(data) {
   const feeds = [];
   for(let i=0; i<items.length; i++) {
     const item = items[i];
+    const { title, author } = parseTitle(getNode(item, 'title'))
     const { image, content } = parseDescription(getNode(item, 'description'))
     feeds.push({
-      title: getNode(item, 'title'),
+      title,
+      author,
       url: getNode(item, 'link'),
       publishedAt: getNode(item, 'pubDate'),
       description: content,
@@ -100,12 +129,19 @@ function htmlDecode(input) {
   return doc.documentElement.textContent;
 }
 
+function parseTitle(content) {
+  const s = content.split('-');
+  const author = s.pop()
+  const title = s.join('-')
+  return { title, author }
+}
+
 function parseDescription(htmlContent) {
   const parser = new DOMParser()
   const doc = parser.parseFromString(htmlContent,"text/html");
 
   const images = doc.getElementsByTagName('img')
-  const image = images[0].src
+  const image = images[0].src || imagePlaceholder
 
   const fonts = doc.getElementsByTagName('font')
   let content = ''

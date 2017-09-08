@@ -141,12 +141,18 @@ function parseDescription(htmlContent) {
   const doc = parser.parseFromString(htmlContent,"text/html");
 
   const images = doc.getElementsByTagName('img')
-  const image = images[0].src || imagePlaceholder
+  const hasImage = images[0].src
+  const image = hasImage || imagePlaceholder
 
   const fonts = doc.getElementsByTagName('font')
   let content = ''
-  for(let i=0; i<fonts.length; i++) {
-    content += htmlDecode(fonts[i].innerHTML) + ' - '
+  try {
+    const indexContent = hasImage? 5 : 4;
+    content = htmlDecode(fonts[indexContent].innerHTML)
+  } catch (e) {
+    for(let i=0; i<fonts.length; i++) {
+      content += htmlDecode(fonts[i].innerHTML) + ' - '
+    }
   }
   return { image, content }
 }

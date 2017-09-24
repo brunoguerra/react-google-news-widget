@@ -1,28 +1,26 @@
 {
-  "name": "google-news-api",
+  "name": "react-google-news-widget",
   "version": "0.1.0",
-  "private": true,
+  "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "flow": "flow"
-  },
-  "dependencies": {
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "react-redux": "^5.0.5",
-    "react-router": "^4.1.2",
-    "react-router-dom": "^4.1.2",
-    "react-scripts": "1.0.10",
-    "react-test-renderer": "^15.6.1"
+    "build": "babel lib --ignore __tests__ --out-dir ./dist",
+    "storybook": "start-storybook -p 6006",
+    "storybook:deploy": "storybook-to-ghpages"
   },
   "devDependencies": {
-    "enzyme": "^2.9.1",
-    "flow-bin": "^0.53.1",
-    "jest-enzyme": "^3.8.0",
-    "nock": "^9.0.14",
-    "xmlhttprequest": "^1.8.0"
+    "@storybook/react": "^3.1.9",
+    "@storybook/storybook-deployer": "^2.0.0",
+    "babel-cli": "^6.18.0",
+    "babel-eslint": "^7.1.0"
+  },
+  "homepage": "https://github.com/brunoguerra/react-google-news-widget",
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
+  "peerDependencies": {
+    "react": "^15.6.1",
+    "styled-components": "^2.1.2"
   }
 }

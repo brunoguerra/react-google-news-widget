@@ -1,6 +1,6 @@
 {
   "name": "react-google-news-widget",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
     "@storybook/addon-actions": "^3.2.10",

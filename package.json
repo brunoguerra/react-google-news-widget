@@ -41,5 +41,8 @@
     "storybook": "start-storybook -p 6006",
     "storybook:deploy": "storybook-to-ghpages",
     "build-storybook": "build-storybook"
+  },
+  "dependencies": {
+    "rebass": "^1.0.4"
   }
 }

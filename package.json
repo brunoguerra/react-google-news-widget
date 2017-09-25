@@ -21,7 +21,6 @@
   },
   "peerDependencies": {
     "react": "^15.6.1",
-    "recompose": "^0.25.0",
     "styled-components": "^2.1.2"
   },
   "lint-staged": {

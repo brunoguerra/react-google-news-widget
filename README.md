@@ -4,6 +4,8 @@
 
 This is main component what fetchs and show cards with content.
 
+See the demo here https://astrocoders.com/react-google-news-widget
+
 ## Props
 
 **queryString**: When this props changes container will fetchs new data

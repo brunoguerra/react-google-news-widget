@@ -10,4 +10,4 @@ import { Button, Welcome } from '@storybook/react/demo'
 
 storiesOf('Google News', module)
   .addDecorator(withKnobs)
-  .add('Default', () => <GoogleNews queryString={text('Query string', 'Fullmetal Alchemist')} />)
+  .add('Default', () => <GoogleNews queryString={text('Query string', `Fullmetal Alchemist`)} />)
